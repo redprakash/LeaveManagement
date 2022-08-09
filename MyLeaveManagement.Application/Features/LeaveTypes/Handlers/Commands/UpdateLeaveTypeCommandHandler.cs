@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
+using MyLeaveManagement.Application.DTOs.LeaveType.Validator;
 using MyLeaveManagement.Application.Features.LeaveTypes.Requests.Commands;
 using MyLeaveManagement.Application.Persistence.Contracts;
 
@@ -22,6 +24,11 @@ namespace MyLeaveManagement.Application.Features.LeaveTypes.Handlers.Commands
         }
         public async Task<Unit> Handle(UpdateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
+            var validator = new UpdateLeaveTypeDtoValidator();
+            var validatorResult = await validator.ValidateAsync(request.LeaveTypeDto);
+            if (!validatorResult.IsValid)
+                throw new Exception();
+
             var leaveType = await _leaveTypeRepository.Get(request.LeaveTypeDto.Id);
             _mapper.Map(request.LeaveTypeDto, leaveType);
             await _leaveTypeRepository.Update(leaveType);
