@@ -5,6 +5,7 @@ using MyLeaveManagement.Application.DTOs.LeaveType.Validator;
 using MyLeaveManagement.Application.Features.LeaveTypes.Requests.Commands;
 using MyLeaveManagement.Application.Persistence.Contracts;
 using MyLeaveManagement.Domain;
+using ValidationException = MyLeaveManagement.Application.Exceptions.ValidationException;
 
 namespace MyLeaveManagement.Application.Features.LeaveTypes.Handlers.Commands
 {
@@ -23,7 +24,7 @@ namespace MyLeaveManagement.Application.Features.LeaveTypes.Handlers.Commands
             var validator = new CreateLeaveTypeDtoValidator();
             var validatorResult = await validator.ValidateAsync(request.LeaveTypeDto);
             if (!validatorResult.IsValid)
-                throw new Exception();
+                throw new ValidationException(validatorResult);
 
             var leaveType = _mapper.Map<LeaveType>(request.LeaveTypeDto);
             leaveType = await _leaveTypeRepository.Add(leaveType);

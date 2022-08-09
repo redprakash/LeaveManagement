@@ -15,7 +15,7 @@ namespace MyLeaveManagement.Application.DTOs.LeaveAllocation.Validator
         public CreateLeaveAllocationDtoValidator(ILeaveTypeRepository leaveTypeRepository)
         {
             _leaveTypeRepository = leaveTypeRepository;
-            Include(new ILeaveAllocationValidator(_leaveTypeRepository));
+            Include(new ILeaveAllocationDtoValidator(_leaveTypeRepository));
         }
     }
 }

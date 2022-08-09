@@ -7,8 +7,10 @@ using AutoMapper;
 using FluentValidation;
 using MediatR;
 using MyLeaveManagement.Application.DTOs.LeaveType.Validator;
+using MyLeaveManagement.Application.Exceptions;
 using MyLeaveManagement.Application.Features.LeaveTypes.Requests.Commands;
 using MyLeaveManagement.Application.Persistence.Contracts;
+using ValidationException = MyLeaveManagement.Application.Exceptions.ValidationException;
 
 namespace MyLeaveManagement.Application.Features.LeaveTypes.Handlers.Commands
 {
@@ -27,7 +29,7 @@ namespace MyLeaveManagement.Application.Features.LeaveTypes.Handlers.Commands
             var validator = new UpdateLeaveTypeDtoValidator();
             var validatorResult = await validator.ValidateAsync(request.LeaveTypeDto);
             if (!validatorResult.IsValid)
-                throw new Exception();
+                throw new ValidationException(validatorResult);
 
             var leaveType = await _leaveTypeRepository.Get(request.LeaveTypeDto.Id);
             _mapper.Map(request.LeaveTypeDto, leaveType);
