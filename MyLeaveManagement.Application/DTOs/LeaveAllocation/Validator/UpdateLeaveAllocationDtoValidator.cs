@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
+using MyLeaveManagement.Application.DTOs.LeaveRequest.Validator;
 using MyLeaveManagement.Application.Persistence.Contracts;
 
 namespace MyLeaveManagement.Application.DTOs.LeaveAllocation.Validator
 {
-    public class ILeaveAllocationValidator : AbstractValidator<ILeaveAllocationDto>
+    public class UpdateLeaveAllocationDtoValidator : AbstractValidator<UpdateLeaveAllocationDto>
     {
         private readonly ILeaveTypeRepository _leaveTypeRepository;
 
-        public ILeaveAllocationValidator(ILeaveTypeRepository leaveTypeRepository)
+        public UpdateLeaveAllocationDtoValidator(ILeaveTypeRepository leaveTypeRepository)
         {
             _leaveTypeRepository = leaveTypeRepository;
-            RuleFor(p => p.NumberOfDays)
-                .GreaterThan(0).WithMessage("{PropertyName} must be before {ComparisonValue");
-
+            Include(new ILeaveAllocationDtoValidator(_leaveTypeRepository));
+            RuleFor(p => p.Id).NotNull().WithMessage("{PropertyName} must be present");
         }
     }
 }

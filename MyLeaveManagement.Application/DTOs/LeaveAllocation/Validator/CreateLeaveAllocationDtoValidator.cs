@@ -4,24 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
+using MyLeaveManagement.Application.Persistence.Contracts;
 
 namespace MyLeaveManagement.Application.DTOs.LeaveAllocation.Validator
 {
     public class CreateLeaveAllocationDtoValidator : AbstractValidator<CreateLeaveAllocationDto>
     {
-        public CreateLeaveAllocationDtoValidator()
+        private readonly ILeaveTypeRepository _leaveTypeRepository;
+
+        public CreateLeaveAllocationDtoValidator(ILeaveTypeRepository leaveTypeRepository)
         {
-            RuleFor(p => p.NumberOfDays)
-                .NotEmpty().WithMessage("{PropertyName} is required")
-                .NotNull().WithMessage("{PropertyName} is required");
-
-            RuleFor(p => p.LeaveTypeId)
-                .NotEmpty().WithMessage("{PropertyName} is required")
-                .NotNull().WithMessage("{PropertyName} is required");
-
-            RuleFor(p => p.Period)
-                .NotEmpty().WithMessage("{PropertyName} is required")
-                .NotNull().WithMessage("{PropertyName} is required");
+            _leaveTypeRepository = leaveTypeRepository;
+            Include(new ILeaveAllocationValidator(_leaveTypeRepository));
         }
     }
 }
